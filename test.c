@@ -5,25 +5,56 @@ int globle;
 int thread_sleep=0;//100000;
 
 uint64_t size=0;
+uint64_t total=0;
+int thread_total=1;
 void print_tail2();
 void print_list(struct KNODE *list);
+pthread_mutex_t flag_add_mutex;
+
 int test(){
 
 	list_header=(struct HEADER *)malloc(sizeof(struct HEADER));
 	memset(list_header , 0, sizeof(struct HEADER));
 	list_header->key_head=(struct KNODE*)malloc(sizeof(struct KNODE));
 	memset(list_header->key_head,0 , sizeof(struct KNODE));
+	pthread_mutex_init(&(list_header->key_head->mutex),NULL);
+	
+	pthread_mutex_init(&flag_add_mutex, NULL);
+	
+	thread_total=20 ;
+	total=100;
+	
+	printf("Input thread_total:\n");
+	printf("Input bench size:\n");
 	
 	
-	random_write();
+	//scanf("%d",&thread_total);
+	//scanf("%d",&total);
+	
+	printf("%d threads\n",thread_total);
+	
+	
+	
+	printf("%d KV\n",total);
+	
+	
+	create_thread(0);
+	//random_write();
 	print_tail2();
-	//print_list(list_header->key_head);
+	print_list(list_header->key_head);
 	
 }
 
 void print_list(struct KNODE *list){
 	while(list!=NULL){
-		printf("%llu\n",list->key);
+		//printf("%llu\n",list->key);
+		if(list->flag[0]==NULL ){
+		}
+		else if(list->key >= list->flag[0]->key){
+			printf("List is not in order\n");
+			exit(2);
+		
+		}
 		list=list->flag[0];
 	}
 }
@@ -37,6 +68,10 @@ void print_tail2(){
 			while(temp!=NULL){
 				j++;
 				temp=temp->flag[i];
+				if(j>10000){
+					printf("in tail2, j is bigger than 10000, i=%d, exit\n", i);
+					exit(3);
+				}
 			}
 			
 			printf("flags in level %d:   %d\n",i,j);

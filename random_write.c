@@ -1,30 +1,22 @@
 #include "main.h"
 
 #include <time.h>
-#define s_to_ns 1000000000	
+
 
 extern uint64_t size;  
-
+extern uint64_t total;  
 
 int random_write(){
 	//printf("i am random_write\n");	
 	srand( (unsigned)time( NULL ) );
-	uint64_t total=0;
-	printf("Input bench size:\n");
-	scanf("%d",&total);
-	printf("%d\n",total);
 	
-double duration=0;
-struct timespec begin, end; 
-clock_gettime(CLOCK_MONOTONIC,&begin); //begin insert , so begin counting 
-
-	for(;size<total;size++){		
+	for(;size<total;){		
+		//printf("sdf, %d, %d\n", size, total);
 		insert(rand());
+		size++;
 	}
-	
-clock_gettime(CLOCK_MONOTONIC,&end); //begin insert , so begin counting
-duration=( (int)end.tv_sec+((double)end.tv_nsec)/s_to_ns ) - ( (int)begin.tv_sec+((double)begin.tv_nsec)/s_to_ns );
-printf("write duration=%f s\n",duration);	
+	printf("end\n");
+
 }
 
 /*
